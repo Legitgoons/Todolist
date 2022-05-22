@@ -87,9 +87,7 @@ const updateTodo = (e, todoId) =>{
 const setLeftItem = () => {
     const leftTodos = todos.filter(todos => todos.isCompleted == false);
     leftItem.innerHTML = `오늘 할 일이 ${leftTodos.length}개 남아있습니다.`;
-
-    console.log(leftTodos);
-}
+};
 
 
 const paintTodos = () => {
