@@ -49,6 +49,7 @@ const completeTodo = (todoId) => {
     const newTodos = todos.map(todos => (todos.id == todoId) ? {...todos,  isCompleted: !todos.isCompleted} : todos);
     todos = newTodos;
 
+    setLeftItem();
     paintTodos();
     
 };
@@ -56,7 +57,8 @@ const completeTodo = (todoId) => {
 const deleteTodo = (todoId) => {
     const newTodos = todos.filter(todos => todos.id != todoId);
     todos = newTodos;
-
+    
+    setLeftItem();
     paintTodos();
 
 };
@@ -85,7 +87,8 @@ const updateTodo = (e, todoId) =>{
 const setLeftItem = () => {
     const leftTodos = todos.filter(todos => todos.isCompleted == false);
     leftItem.innerHTML = `오늘 할 일이 ${leftTodos.length}개 남아있습니다.`;
-    
+
+    console.log(leftTodos);
 }
 
 
