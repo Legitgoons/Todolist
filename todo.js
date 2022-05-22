@@ -5,28 +5,26 @@ const leftItem = document.querySelector('.left-items');
 
 let todos = []; // todo를 모아놓은 객체 배열 {id, content, isCompleted}
 let id = 1; // todo 객체의 id가 될 숫자
+let isCompleted = false;
 
+const setTodos = (newTodos) => todos = newTodos;
 
 const createTodo = () => {
 
     todoInputElement.addEventListener('keypress', (e)=>{
         if(e.key == 'Enter'){
             pushTodo(e.target.value);
+            todoInputElement.value = "";
         }
     });
-    // todoInputElement의 "keypress"를 이벤트리스너로 등록한다.
-        // todoInputElement에 키보드 'enter'가 입력되었을 때
-        // todoInputElement의 내용을 가져와 
-        // pushTodo(todoInputElement의 내용)한다. -> pushTodo() 함수는 바로 밑에 있습니다.
-    todoEnterBtn.addEventListener('click', (e)=>{
-        pushTodo(todoInputElement.value);
-    });
-    // todoEnterBtn의 'click'을 이벤트 리스너로 등록한다.
-        // todoInputElement의 내용을 가져와 
-        // pushTodo(todoInputElement의 내용)한다. 
 
-    todoInputElement = ''; // todoInputElement의 내용을 없앤다
+    todoEnterBtn.addEventListener('click', ()=>{
+        pushTodo(todoInputElement.value);
+        todoInputElement.value = "";
+    });
+
 };
+
 
 const pushTodo = (content) => {
     if (content != ''){
@@ -35,16 +33,14 @@ const pushTodo = (content) => {
         const newTodos = [...todos, {
             id : newId,
             content : content,
-            isCompleted : false// 얘는 토글로
+            isCompleted : false
         }];
-        // newTodos에 기존 todos와 매개변수로 받아온 content를 객체로 만들어 넣는다.
 
-        todos = newTodos;
-
+        setTodos(newTodos);
         paintTodos();
     }
     else {
-        alert("일정을 기입해주세요.");
+        alert("할 일을 입력해주세요.");
     }
 
 };
@@ -86,42 +82,50 @@ const updateTodo = (e, todoId) =>{
 };
 
 
+const setLeftItem = () => {
+    const leftTodos = todos.filter(todos => todos.isCompleted == false);
+    leftItem.innerHTML = `오늘 할 일이 ${leftTodos.length}개 남아있습니다.`
+}
+
+
 const paintTodos = () => {
     todoList.innerHTML = null; // todoList안의 html 초기화
-    todos.forEach(todo => paint(todo)); // todos를 paint에 넣음
+    todos.forEach(todos => paint(todos)); // todos를 paint에 넣음
 };
 
-const paint = (todo) => { // todo 할 걸 입력받아서 보이게 한다
+const paint = (todos) => { 
 
     const liElement = document.createElement('li');
     liElement.classList.add('todo-item'); 
 
-    const inputElement = document.createElement('input');
-    inputElement.classList.add('edit-input'); 
+    // const inputElement = document.createElement('input');
+    // inputElement.classList.add('edit-input'); 
 
     const checkBtn = document.createElement('button');
     checkBtn.classList.add('checkbox');
     checkBtn.innerHTML = '✔︎';
-        // checkBtn에 이벤트 리스너로 'click'을 감지한다. 실행할 함수는 completeTodo
+    checkBtn.addEventListener('click', (todoId) => completeTodo(todoId));
 
     const content = document.createElement('div');
     content.classList.add('content');
-    content.innerHTML = todo.content;
-    content.addEventListener('dblclick', (e)=> updateTodo(e, todo.id));
+    content.innerHTML = todos.content;
+    content.addEventListener('dblclick', (e)=> updateTodo(e, todos.id));
 
 
     const delBtn = document.createElement('button');
     delBtn.classList.add('delBtn'); 
     delBtn.innerHTML = '✕';
-    // delBtn에 이벤트 리스너로 'click'을 감지한다. 실행할 함수는 deleteTodo
+    delBtn.addEventListener('click', (todoId) => deleteTodo(todoId));
 
-
-    liElement.appendChild(checkBtn); // li에 check을 자녀로 붙이기
-    liElement.appendChild(inputElement);
+    liElement.appendChild(checkBtn); 
+    // liElement.appendChild(inputElement);
     liElement.appendChild(content);
     liElement.appendChild(delBtn);
 
-    todoList.appendChild(liElement);    
+    todoList.appendChild(liElement);
+
+    setLeftItem();
 };
+
 
 createTodo();
