@@ -4,7 +4,7 @@ const todoList = document.querySelector('.todo-list');
 const leftItem = document.querySelector('.left-items');
 
 let todos = []; // todo를 모아놓은 객체 배열 {id, content, isCompleted}
-let id = 1; // todo 객체의 id가 될 숫자
+let id = 0; // todo 객체의 id가 될 숫자
 let isCompleted = false;
 
 const setTodos = (newTodos) => todos = newTodos;
@@ -46,16 +46,16 @@ const pushTodo = (content) => {
 };
 
 const completeTodo = (todoId) => {
-    // newTodo에 현재 todos을 가져와서 map(삼항연산자)을 돌린다. -> (삼항연산자) todo.id랑 todoId가 같으면 isCompleted를 not(!) 처리한다
-    // newTodos를 todos로 한다
+    const newTodos = todos.map(todos => (todos.id == todoId) ? {...todos,  isCompleted: !todos.isCompleted} : todos);
+    todos = newTodos;
 
     paintTodos();
     
 };
 
 const deleteTodo = (todoId) => {
-    // newTOdos에 현재 todos를 가져와 filter(조건)를 돌린다 -> todo.id랑 todoId가 같지 않은 것만 가져온다
-    // newTodos를 todos로 한다
+    const newTodos = todos.filter(todos => todos.id != todoId);
+    todos = newTodos;
 
     paintTodos();
 
@@ -84,7 +84,8 @@ const updateTodo = (e, todoId) =>{
 
 const setLeftItem = () => {
     const leftTodos = todos.filter(todos => todos.isCompleted == false);
-    leftItem.innerHTML = `오늘 할 일이 ${leftTodos.length}개 남아있습니다.`
+    leftItem.innerHTML = `오늘 할 일이 ${leftTodos.length}개 남아있습니다.`;
+    
 }
 
 
@@ -104,7 +105,11 @@ const paint = (todos) => {
     const checkBtn = document.createElement('button');
     checkBtn.classList.add('checkbox');
     checkBtn.innerHTML = '✔︎';
-    checkBtn.addEventListener('click', (todoId) => completeTodo(todoId));
+    checkBtn.addEventListener('click', () => completeTodo(todos.id));
+
+    if(todos.isCompleted){
+        liElement.classList.add('checked');
+    }
 
     const content = document.createElement('div');
     content.classList.add('content');
@@ -115,7 +120,7 @@ const paint = (todos) => {
     const delBtn = document.createElement('button');
     delBtn.classList.add('delBtn'); 
     delBtn.innerHTML = '✕';
-    delBtn.addEventListener('click', (todoId) => deleteTodo(todoId));
+    delBtn.addEventListener('click', () => deleteTodo(todos.id));
 
     liElement.appendChild(checkBtn); 
     // liElement.appendChild(inputElement);
